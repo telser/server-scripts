@@ -9,16 +9,32 @@ MAILDOMAIN=silencedpoet.com
 
 # Update the ports tree
 /usr/sbin/portsnap auto > /var/log/portsnap.log
-/usr/bin/mailx -s "Portsnap ${HOSTNAME} Report" "portsnap@${MAILDOMAIN}" </var/log/portsnap.log
+PORTSNAP_CODE=$?
+
+if [ $PORTSNAP_CODE -ne 0 ]; then
+  /usr/bin/mailx -s "Portsnap ${HOSTNAME} Failed!" "portsnap@${MAILDOMAIN}" </var/log/portsnap.log
+fi
 
 # Prepare the system to upgraded
 /usr/local/bin/synth prepare-system > /var/log/synth-prepare.log
-/usr/bin/mailx -s "Synth ${HOSTNAME} Preparing" "synth@${MAILDOMAIN}" </var/log/synth-prepare.log
+PREP_CODE=$?
+
+if [ $PREP_CODE -ne 0 ]; then
+  /usr/bin/mailx -s "Synth ${HOSTNAME} Preparing Failed" "synth@${MAILDOMAIN}" </var/log/synth-prepare.log
+fi
+
+# Ensure the repo was really rebuilt for consumption by jails
+/usr/local/bin/synth rebuild-repository > /var/log/synth-rebuild.log
+REBUILD_CODE=$?
+
+if [ $REBUILD_CODE -ne 0 ]; then
+  /usr/bin/mailx -s "Synth ${HOSTNAME} Rebuild Failed" "synth@${MAILDOMAIN}" </var/log/synth-rebuild.log
+fi
 
 # Upgrade the system
 /usr/local/bin/synth upgrade-system > /var/log/synth-upgrade.log
-/usr/bin/mailx -s "Synth ${HOSTNAME} Upgrading" "synth@${MAILDOMAIN}" </var/log/synth-upgrade.log
+UPGRADE_CODE=$?
 
-# Ensure the repo was really rebuilt for consumption
-/usr/local/bin/synth rebuild-repository > /var/log/synth-upgrade.log
-/usr/bin/mailx -s "Synth ${HOSTNAME} Rebuild" "synth@${MAILDOMAIN}" </var/log/synth-upgrade.log
+if [ $UPGRADE_CODE -ne 0 ]; then
+  /usr/bin/mailx -s "Synth ${HOSTNAME} Upgrading Failed" "synth@${MAILDOMAIN}" </var/log/synth-upgrade.log
+fi
