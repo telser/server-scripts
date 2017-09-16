@@ -20,7 +20,7 @@ fi
 POUDRIERE_CODE=$?
 
 if [ $POUDRIERE_CODE -ne 0 ]; then
-  /usr/bin/mailx -s "Poudriere bulk rebuild on ${HOSTNAME} Failed" "poudriere@${MAILDOMAIN}"  "Failure"
+  /usr/bin/mailx -s "Poudriere bulk rebuild on ${HOSTNAME} Failed" "poudriere@${MAILDOMAIN}" "Failure"
 fi
 
 chgrp -R www /usr/local/poudriere/data/logs/bulk/11-1_release-HEAD
