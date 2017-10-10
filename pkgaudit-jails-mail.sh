@@ -28,6 +28,7 @@ auditJail() {
   pkg -j $JAIL_NUM audit -F > $TMP_AUDIT_REPORT
   AUDIT_CODE=$?                             
   maybeCatReport $AUDIT_CODE $JAIL_HOST $TMP_AUDIT_REPORT
+  rm $TMP_AUDIT_REPORT
 }
 
 auditHost() {
@@ -36,6 +37,7 @@ auditHost() {
   pkg audit -F > $TMP_AUDIT_REPORT
   AUDIT_CODE=$?                             
   maybeCatReport $AUDIT_CODE $HOSTNAME $TMP_AUDIT_REPORT
+  rm $TMP_AUDIT_REPORT
 }
   
 echo "cleaning up previous audit report"
