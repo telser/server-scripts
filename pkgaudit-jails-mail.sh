@@ -40,7 +40,6 @@ auditHost() {
   rm $TMP_AUDIT_REPORT
 }
   
-echo "cleaning up previous audit report"
 rm $AUDIT_REPORT
 
 JIDS=`jls jid`
